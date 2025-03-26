@@ -1,0 +1,33 @@
+name: Daily News Push
+on:
+  schedule:
+    - cron: '0 8 * * *'  # 每天UTC时间0点运行（北京时间早8点）
+  workflow_dispatch:     # 允许手动触发
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    steps:
+    - name: 检出代码
+      uses: actions/checkout@v4
+
+    - name: 设置Python环境
+      uses: actions/setup-python@v4
+      with:
+        python-version: '3.13.2'
+
+    - name: 安装依赖
+      run: |
+        pip install -r requirements.txt
+
+    - name: 缓存翻译模型
+      uses: actions/cache@v3
+      with:
+        path: ~/.cache/huggingface
+        key: ${{ runner.os }}-huggingface-${{ hashFiles('requirements.txt') }}
+
+    - name: 运行新闻机器人
+      env:
+        TELEGRAM_BOT_TOKEN: ${{ secrets.7529879641:AAEpemwQRJK4sZ5wPGZLLb9iItvxxFgNfrg }}
+        TELEGRAM_CHAT_ID: ${{ secrets.-1002271952186 }}
+      run: python main.py
