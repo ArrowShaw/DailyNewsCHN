@@ -28,6 +28,12 @@ jobs:
 
     - name: 运行新闻机器人
       env:
-        TELEGRAM_BOT_TOKEN: ${{ secrets.7529879641:AAEpemwQRJK4sZ5wPGZLLb9iItvxxFgNfrg }}
-        TELEGRAM_CHAT_ID: ${{ secrets.-1002271952186 }}
+        TELEGRAM_BOT_TOKEN: ${{ secrets.TELEGRAM_BOT_TOKEN }}
+        TELEGRAM_CHAT_ID: ${{ secrets.TELEGRAM_CHAT_ID }}
       run: python main.py
+
+    - name: 发送成功通知
+      if: success()
+      uses: rtCamp/action-slack-notify@v2
+      env:
+        SLACK_WEBHOOK: ${{ secrets.SLACK_WEBHOOK }}
