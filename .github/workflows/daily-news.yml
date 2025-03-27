@@ -8,29 +8,50 @@ jobs:
   build:
     runs-on: ubuntu-latest
     steps:
-      # ▼▼▼ 新增的Rust环境配置 ▼▼▼
-    - name: 安装Rust
-      run: |
-        curl --proto '=https' --tlsv1.2 -sSf https://sh.rustup.rs | sh -s -- -y
-        echo "$HOME/.cargo/bin" >> $GITHUB_PATH
-
+    # ========== 环境配置 ==========
     - name: 安装系统依赖
       run: |
         sudo apt-get update
-        sudo apt-get install -y python3-dev build-essential
-    # ▲▲▲ 新增内容结束 ▲▲▲
+        sudo apt-get install -y \
+          python3-dev \
+          build-essential \
+          cmake \
+          protobuf-compiler \
+          libprotobuf-dev
 
+    - name: 配置Rust环境
+      run: |
+        curl --proto '=https' --tlsv1.2 -sSf https://sh.rustup.rs | sh -s -- -y --default-toolchain stable
+        echo "$HOME/.cargo/bin" >> $GITHUB_PATH
+        echo "[source.crates-io]" >> $HOME/.cargo/config
+        echo "replace-with = 'rsproxy'" >> $HOME/.cargo/config
+        echo "[source.rsproxy]" >> $HOME/.cargo/config
+        echo "registry = \"https://rsproxy.cn/crates.io-index\"" >> $HOME/.cargo/config
+
+  # ========== 代码检出 ==========
     - name: 检出代码
       uses: actions/checkout@v4
 
+  # ========== Python环境 ==========
     - name: 设置Python环境
       uses: actions/setup-python@v4
       with:
         python-version: '3.13.2'
 
+  # ========== 依赖安装 ==========
     - name: 安装依赖
-      run:
-        pip install -r requirements.txt
+      env:
+        CARGO_NET_GIT_FETCH_WITH_CLI: "true"  # 强制使用Git命令行
+        PIP_EXTRA_INDEX_URL: "https://pypi.tuna.tsinghua.edu.cn/simple"
+      run: |
+        pip install --upgrade pip setuptools wheel
+        pip install torch==2.0.1+cpu -f https://download.pytorch.org/whl/cpu
+        pip install \
+          --no-cache-dir \
+          --force-reinstall \
+          --use-pep517 \
+          --global-option="--rust-extension" \
+          -r requirements.txt
 
     - name: 缓存翻译模型
       uses: actions/cache@v3

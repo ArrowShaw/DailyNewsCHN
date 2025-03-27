@@ -1,3 +1,9 @@
+# 使用清华镜像源
+--index-url https://pypi.tuna.tsinghua.edu.cn/simple
+--extra-index-url https://pypi.org/simple
+
+# 明确指定依赖版本
+tokenizers==0.15.0
 feedparser==6.0.10
 python-telegram-bot==20.3
 transformers==4.30.2
