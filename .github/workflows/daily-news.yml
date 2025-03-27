@@ -16,6 +16,11 @@ jobs:
       with:
         python-version: '3.13.2'
 
+    - name: 安装 Rust（Linux/macOS）
+      run:
+        curl --proto '=https' --tlsv1.2 -sSf https://sh.rustup.rs | sh
+source $HOME/.cargo/env
+
     - name: 安装依赖
       run: |
         pip install -r requirements.txt
