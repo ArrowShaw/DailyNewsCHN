@@ -19,10 +19,10 @@ jobs:
     - name: 安装 Rust（Linux/macOS）
       run:
         curl --proto '=https' --tlsv1.2 -sSf https://sh.rustup.rs | sh
-source $HOME/.cargo/env
+        source $HOME/.cargo/env
 
     - name: 安装依赖
-      run: |
+      run:
         pip install -r requirements.txt
 
     - name: 缓存翻译模型
