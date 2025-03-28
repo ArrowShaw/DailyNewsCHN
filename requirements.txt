@@ -7,5 +7,4 @@ tokenizers==0.15.0
 feedparser==6.0.10
 python-telegram-bot==20.3
 transformers==4.30.2
-torch==2.6.0
 requests==2.31.0
